@@ -135,6 +135,30 @@ const createServer = (options) => {
     })
   })
 
+  //https://www.algolia.com/doc/rest-api/search/#batch-write-operations
+  app.post('/1/indexes/:indexName/batch', async (req, res) => {
+    const { indexName } = req.params
+    const _id = v4()
+    const { body, params: { indexName } } = req
+    const { objectID } = req.params
+
+
+
+    const db = getIndex(indexName, path)
+    await db.PUT([{
+      _id,
+      ...body
+    }])
+
+
+    return res.status(201).json({
+      createdAt: (new Date()).toISOString(),
+      taskID: 'algolite-task-id',
+      objectID: _id
+    })
+
+  })
+
   app.post('/1/indexes/:indexName/clear', async (req, res) => {
     const { indexName } = req.params
 
